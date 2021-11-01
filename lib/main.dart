@@ -4,6 +4,7 @@
 // 3) Split the app into three widgets: App, TextControl & Text
 
 
+import 'package:app_museo/models/dbrecord.dart';
 import 'package:flutter/material.dart';
 
 // Import the firebase_core plugin
@@ -57,6 +58,20 @@ class _MyAppState extends State<MyApp> {
     print(_index);
   }
 
+  // Firebase Realtime Database Json parsing:
+  Computer parseJson(DataSnapshot result, int index) {    
+    //final parsedJson = json.decode(result.value);  // don't need this: json is already decoded
+    // final parsed = result.value[0];
+    // print(result.value);
+    // print(result.value[0]);
+    return Computer.fromJson(new Map<String, dynamic>.from(result.value[index]));
+    /*
+    final myComputerList=(result.value).map((i) =>
+              Computer.fromJson(i)).toList();
+    return myComputerList.elementAt(index);
+    */
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -83,7 +98,9 @@ class _MyAppState extends State<MyApp> {
         if (snapshot.connectionState == ConnectionState.done) {
           // Read data from database (example)          
           final DatabaseReference db = FirebaseDatabase.instance.reference();
-          db.child('AppMuseo/').once().then((result) => print(result.value));
+          db.child('AppMuseo/').once().then((result) => print(/*result.value*/ parseJson(result, _index)));
+          
+          
             return MaterialApp(
               home: Scaffold(
                 appBar: AppBar(
