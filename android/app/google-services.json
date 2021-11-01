@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "509807795819",
+    "firebase_url": "https://appmuseojfk-default-rtdb.firebaseio.com",
+    "project_id": "appmuseojfk",
+    "storage_bucket": "appmuseojfk.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:509807795819:android:7f92d41f34a5d4e992db2e",
+        "android_client_info": {
+          "package_name": "com.jfkennedy.app_museo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "509807795819-egnnoe0f203d4f8h23jp3oripn0ev0dc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDX305rQ-MKVu44WfPfHb9ZHAzAiRxzgZQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "509807795819-egnnoe0f203d4f8h23jp3oripn0ev0dc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
