@@ -27,6 +27,6 @@ class Computer {
   @override
   String toString() {
     // TODO: implement toString
-    return this.brand+" "+this.name+" "+this.year;
+    return "item "+this.id.toString()+": "+this.brand+" "+this.name+" "+this.year;
   }
 }

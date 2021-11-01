@@ -60,16 +60,18 @@ class _MyAppState extends State<MyApp> {
 
   // Firebase Realtime Database Json parsing:
   Computer parseJson(DataSnapshot result, int index) {    
-    //final parsedJson = json.decode(result.value);  // don't need this: json is already decoded
-    // final parsed = result.value[0];
-    // print(result.value);
-    // print(result.value[0]);
-    return Computer.fromJson(new Map<String, dynamic>.from(result.value[index]));
-    /*
+    // final parsedJson = json.decode(result.value);  // don't need this: json is already decoded
+    
+    // print(result.value);     // Debug Test
+    // print(result.value[0]);  // Debug Test
+
+    //return Computer.fromJson(new Map<String, dynamic>.from(result.value[index]));  // First try: works!
+
     final myComputerList=(result.value).map((i) =>
-              Computer.fromJson(i)).toList();
-    return myComputerList.elementAt(index);
-    */
+              Computer.fromJson(new Map<String, dynamic>.from(i))).toList();
+    return myComputerList[index];
+    
+    
   }
 
   @override
