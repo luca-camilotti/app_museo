@@ -1,19 +1,17 @@
-// 1) Create a new Flutter App (in this project) and output an AppBar and some text
-// below it
-// 2) Add a button which changes the text (to any other text of your choice)
-// 3) Split the app into three widgets: App, TextControl & Text
-
+/* AppMuseo */
 
 import 'package:app_museo/models/dbrecord.dart';
+import 'package:app_museo/models/nfctag.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
 
-// Import the firebase_core plugin
+// Import Firebase_core plugin
 import 'package:firebase_core/firebase_core.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:firebase_database/firebase_database.dart';
-
 import 'dart:convert';  // json conversion
 
+// My Custom Widgets:
 import './textdisplay.dart';
 import './button.dart';
 
@@ -32,50 +30,41 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  
+  // initialize Firebase connection:
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  DatabaseReference _db;
+  DataSnapshot _dbdata;
+  NFCtag _nfctag = null;  // NFC tag data attribute
   
-  var _index = 0;
-
-  var _displayMessages = [
-      'Hello World',
-      'Ciao Mondo',
-      'Hallo Welt',
-      'Bonjour le Monde',
-      'Hola Mundo',
-      'Saluton mondo',
-    ];
-
-  void _changeMessage() {
-    setState(() {
-      if(_index >= _displayMessages.length -1) 
-        _index = 0;
-      
-      else
-        _index += 1;
-      
-    });
-    print(_index);
+  // Get NFC tag data:
+  void setNFCID(NfcData data) {
+    setState(() => _nfctag = NFCtag.fromJson(data.id, new Map<String, dynamic>.from(jsonDecode(data.content.substring(19)))) );
   }
 
   // Firebase Realtime Database Json parsing:
   Computer parseJson(DataSnapshot result, int index) {    
     // final parsedJson = json.decode(result.value);  // don't need this: json is already decoded
-    
     // print(result.value);     // Debug Test
     // print(result.value[0]);  // Debug Test
-
     //return Computer.fromJson(new Map<String, dynamic>.from(result.value[index]));  // First try: works!
 
     final myComputerList=(result.value).map((i) =>
               Computer.fromJson(new Map<String, dynamic>.from(i))).toList();
-    return myComputerList[index];
-    
-    
+    return myComputerList[index];    
   }
 
   @override
   Widget build(BuildContext context) {
+
+    // NFC Stream Reader event listener:
+    FlutterNfcReader.onTagDiscovered().listen((onData) {
+      print(onData.id);  // debug
+      print(onData.content);  // debug
+      
+      setNFCID(onData);
+    });
+
+
     return FutureBuilder(
       // Initialize FlutterFire:
       future: _initialization,
@@ -99,10 +88,11 @@ class _MyAppState extends State<MyApp> {
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
           // Read data from database (example)          
-          final DatabaseReference db = FirebaseDatabase.instance.reference();
-          db.child('AppMuseo/').once().then((result) => print(/*result.value*/ parseJson(result, _index)));
-          
-          
+          /*final DatabaseReference db = FirebaseDatabase.instance.reference();
+          db.child('AppMuseo/').once().then((result) => print(/*result.value*/ parseJson(result, _nfctag.id)));
+          */
+          _db = FirebaseDatabase.instance.reference();
+          _db.child('AppMuseo/').once().then((result) => setState(() => _dbdata = result));
             return MaterialApp(
               home: Scaffold(
                 appBar: AppBar(
@@ -111,9 +101,17 @@ class _MyAppState extends State<MyApp> {
             body: Column(
               children: [
                 TextDisplay(
-                  _displayMessages[_index],
+                  text: _nfctag.toString(),
                 ),
-                Button(_changeMessage, 'click me!'),            
+                TextDisplay(
+                  text: parseJson(_dbdata, _nfctag.id).name+' ('+parseJson(_dbdata, _nfctag.id).year+')',
+                ),
+                TextDisplay(
+                  text: (parseJson(_dbdata, _nfctag.id).description),
+                  fontsize: 15,
+                  align: TextAlign.justify,
+                ),
+                Button(() {}, 'click me!'),            
               ],
             ),
           ),

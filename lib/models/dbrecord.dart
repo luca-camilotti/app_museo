@@ -1,3 +1,5 @@
+// Model for Firebase Realtime database content
+
 class Computer {
   final int id;
   final String brand;
