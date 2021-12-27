@@ -99,13 +99,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Computer getItem(int index) {
-    if(index < 0 || _itemList == null  || _itemList!.length <= index) // invalid tag
+    if(index < 0 || _itemList == null  || _itemList.length <= index) // invalid tag
     {
       print('id: '+index.toString()+', _itemList: '+(_itemList==null?'null':'ok'));
       return Computer(brand: '', id: index, description: '', name: '', year: '');
     }
     
-    return _itemList![index];
+    return _itemList[index];
   }
 
   @override

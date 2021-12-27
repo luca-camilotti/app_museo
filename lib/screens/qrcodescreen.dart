@@ -11,18 +11,15 @@ class QRViewExample extends StatefulWidget {
   final Function(Barcode) setQRcode; // Function to change the main screen state: it is passed through the constructor
 
   @override
-  State<StatefulWidget> createState() => _QRViewExampleState(setQRcode: setQRcode);
+  State<StatefulWidget> createState() => _QRViewExampleState();
 }
 
 class _QRViewExampleState extends State<QRViewExample> {
   
-  _QRViewExampleState({required this.setQRcode}) : super();
   
   Barcode? result;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-
-  final Function(Barcode) setQRcode;
 
   
   // In order to get hot reload to work we need to pause the camera if the platform
@@ -157,7 +154,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       setState(() {
         result = scanData;
       });
-      setQRcode(scanData);
+      widget.setQRcode(scanData);  // QR Code data callback
     });
   }
 
