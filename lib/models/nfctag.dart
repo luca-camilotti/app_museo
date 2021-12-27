@@ -6,8 +6,8 @@ class NFCtag {
   
 
   NFCtag({
-    this.tagid,
-    this.id,    
+    required this.tagid,
+    required this.id,    
   });
 
   factory NFCtag.fromJson(String tagid, Map<String, dynamic> parsedJson){

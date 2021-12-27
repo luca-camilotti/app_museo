@@ -8,11 +8,11 @@ class Computer {
   final String year;
 
   Computer({
-    this.id,
-    this.brand,
-    this.description,
-    this.name,
-    this.year
+    required this.id,
+    required this.brand,
+    required this.description,
+    required this.name,
+    required this.year
   });
 
   factory Computer.fromJson(Map<String, dynamic> parsedJson){

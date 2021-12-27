@@ -5,7 +5,7 @@ class TextDisplay extends StatelessWidget {
   final double fontsize;
   final TextAlign align;
 
-  TextDisplay({this.text, this.fontsize = 28, this.align = TextAlign.center});
+  TextDisplay({required this.text, this.fontsize = 28, this.align = TextAlign.center});
 
   @override
   Widget build(BuildContext context) {
