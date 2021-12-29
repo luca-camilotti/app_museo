@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRViewExample extends StatefulWidget {
@@ -155,6 +156,12 @@ class _QRViewExampleState extends State<QRViewExample> {
         result = scanData;
       });
       widget.setQRcode(scanData);  // QR Code data callback
+      SchedulerBinding.instance!.addPostFrameCallback((_) {
+        // Navigator.of(context, rootNavigator: true).pop();
+        // Navigator.pop(context);  // Back to main screen
+        dispose();
+        Navigator.of(context).pop();
+      });
     });
   }
 

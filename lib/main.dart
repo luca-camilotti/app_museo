@@ -1,21 +1,23 @@
 /* AppMuseo */
-
+import 'package:app_museo/widgets/snackbar.dart';
+import 'package:flutter/material.dart';
+// Models:
 import 'package:app_museo/models/dbrecord.dart';
 import 'package:app_museo/models/nfctag.dart';
+// Screens:
 import 'package:app_museo/screens/qrcodescreen.dart';
-import 'package:flutter/material.dart';
+// Widgets:
+import 'package:app_museo/widgets/textdisplay.dart';
+
+// NFC plugin:
 import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
 
-// Import Firebase_core plugin
+// Firebase_core plugin:
 import 'package:firebase_core/firebase_core.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:firebase_database/firebase_database.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'dart:convert';  // json conversion
-
-// My Custom Widgets:
-import './textdisplay.dart';
-import './button.dart';
 
 // void main() => runApp(MyApp());
 void main() {
@@ -72,40 +74,76 @@ class _MyHomePageState extends State<MyHomePage> {
   // initialize Firebase connection:
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   
-  late List<dynamic> _itemList;  // Museum item list
+  // late List<dynamic> _itemList;  // Museum item list
+
+  int _item = -1; 
 
   NFCtag? _nfctag = null;  // NFC tag data attribute
   String? _qrcode = null;  // QR code attribute
   
   // NFC tag data callback:
   void _setNFCID(NfcData data) {
-    setState(() => _nfctag = NFCtag.fromJson(data.id, new Map<String, dynamic>.from(jsonDecode(data.content.substring(19)))) );
+    setState(() {
+      _nfctag = NFCtag.fromJson(data.id, new Map<String, dynamic>.from(jsonDecode(data.content.substring(19))));
+      if(_nfctag!.id >= 0) {
+        _item = _nfctag!.id;
+      }
+     });
   }
 
   // QR code data callback:
   void _setQRCode(Barcode data) {
-    setState(() => _qrcode = data.code );
+    setState(() { 
+      _qrcode = data.code;
+      String message = 'QR Code Error: '+data.code.toString();
+      String code = data.code!=null ? data.code!.substring(data.code!.length-2) : ''; 
+      int val = int.tryParse(code) ?? -1;
+      if(val >= 0) {
+        message = '';
+        _item = val;
+      }
+      showSnackbar(message, 3);      
+     });
+  }
+
+  // Show a snackbar: 
+  void showSnackbar(String? text, int duration) {
+    final String message = (text==null ? 'invalid QR: '+text.toString() : text.toString());
+    final snackbar = SnackBar(
+      duration: Duration(seconds: duration),
+      content: Text(message),
+      action: SnackBarAction(
+        label: 'ok',
+        onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+      ),
+    );   
+    if(message!=null && message.length > 0) {
+      ScaffoldMessenger.of(context).showSnackBar(snackbar);      
+    }
   }
 
   // Firebase Realtime Database Json parsing:
-  void _parseJsonItems(DataSnapshot result) {    
+  List<dynamic> _parseJsonItems(DataSnapshot result) {    
     // final parsedJson = json.decode(result.value);  // don't need this: json is already decoded
     // print(result.value);     // Debug Test
     // print(result.value[0]);  // Debug Test
     //return Computer.fromJson(new Map<String, dynamic>.from(result.value[index]));  // First try: works!
 
-    _itemList = (result.value).map((i) =>
+    print('_parseJsonItems(): '+result.value);  // debug 
+
+    return (result.value).map((i) =>
               Computer.fromJson(new Map<String, dynamic>.from(i))).toList();  
   }
 
-  Computer getItem(int index) {
-    if(index < 0 || _itemList == null  || _itemList.length <= index) // invalid tag
+  Computer getItem(int index, List<dynamic> itemList) {
+    if(index < 0 || itemList == null  || itemList!.length <= index) // invalid tag
     {
-      print('id: '+index.toString()+', _itemList: '+(_itemList==null?'null':'ok'));
+      print('id: '+index.toString()+', itemList: '+(itemList==null?'null':'ok'));
+      print('itemList.length: '+itemList.length.toString());
       return Computer(brand: '', id: index, description: '', name: '', year: '');
     }
     
-    return _itemList[index];
+    return itemList![index];
   }
 
   @override
@@ -146,25 +184,29 @@ class _MyHomePageState extends State<MyHomePage> {
           */
                     
           final DatabaseReference _db = FirebaseDatabase.instance.reference();
-          _db.child('AppMuseo/').once().then((result) => setState(() => _parseJsonItems(result)));
+          List<dynamic> itemList = [];  // Museum item list
+          _db.child('AppMuseo/').once().then((result)  {
+            print('Firebase Realtime DB fetching: '+result.value.toString());
+            itemList = _parseJsonItems(result); 
+            });
             return Scaffold(
                 appBar: AppBar(
                   title: Text(widget.title),
                 ),
             body: Column(
               children: [
+                // TextDisplay(text: _nfctag.toString(),),  // for debug
+                // TextDisplay(text: 'QR: '+(_qrcode != null ? _qrcode! : ''),),  // for debug
                 TextDisplay(
-                  text: _nfctag.toString(),
+                  text: (getItem(_item, itemList).name!=null && getItem(_item, itemList).name.length>0) ? getItem(_item, itemList).name+' ('+getItem(_item, itemList).year+')':'Scan NFC Tag',
                 ),
                 TextDisplay(
-                  text: getItem((_nfctag != null ? _nfctag!.id : -1)).name+' ('+getItem((_nfctag != null ? _nfctag!.id : -1)).year+')',
-                ),
-                TextDisplay(
-                  text: (getItem((_nfctag != null ? _nfctag!.id : -1)).description),
+                  text: (getItem(_item, itemList).description),
                   fontsize: 15,
                   align: TextAlign.justify,
                 ),
                 //Button(() {}, 'click me!'),  
+                /*
                 ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -172,12 +214,25 @@ class _MyHomePageState extends State<MyHomePage> {
                       ));
                   },
                   child: const Text('QR Code'),
-                ),
-                TextDisplay(
-                  text: 'QR: '+(_qrcode != null ? _qrcode! : ''),
-                ),
+                ), */
+                
+                // Snackbar(snackbarText: _snackbarText, duration: 4, lastJob: _resetSnackbar,),
               ],
             ),          
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => QRViewExample(setQRcode: _setQRCode,)),
+                );
+                /*
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => QRViewExample(setQRcode: _setQRCode,),
+                  )); */
+                },
+              tooltip: 'Scan QR code',
+              child: Icon(Icons.qr_code),
+            ),
             );
           }
 
