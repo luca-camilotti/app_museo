@@ -74,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // initialize Firebase connection:
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   
-  // late List<dynamic> _itemList;  // Museum item list
+  late List<dynamic> itemList = [];  // Museum item list
 
   int _item = -1; 
 
@@ -129,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // print(result.value[0]);  // Debug Test
     //return Computer.fromJson(new Map<String, dynamic>.from(result.value[index]));  // First try: works!
 
-    print('_parseJsonItems(): '+result.value);  // debug 
+    print('_parseJsonItems(): '+result.value.toString());  // debug 
 
     return (result.value).map((i) =>
               Computer.fromJson(new Map<String, dynamic>.from(i))).toList();  
@@ -139,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if(index < 0 || itemList == null  || itemList!.length <= index) // invalid tag
     {
       print('id: '+index.toString()+', itemList: '+(itemList==null?'null':'ok'));
-      print('itemList.length: '+itemList.length.toString());
+      print('itemList.length: '+itemList!.length.toString());
       return Computer(brand: '', id: index, description: '', name: '', year: '');
     }
     
@@ -184,10 +184,10 @@ class _MyHomePageState extends State<MyHomePage> {
           */
                     
           final DatabaseReference _db = FirebaseDatabase.instance.reference();
-          List<dynamic> itemList = [];  // Museum item list
+          
           _db.child('AppMuseo/').once().then((result)  {
             print('Firebase Realtime DB fetching: '+result.value.toString());
-            itemList = _parseJsonItems(result); 
+            itemList = _parseJsonItems(result);
             });
             return Scaffold(
                 appBar: AppBar(
