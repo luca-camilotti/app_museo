@@ -1,5 +1,5 @@
 /* AppMuseo */
-import 'package:app_museo/widgets/snackbar.dart';
+
 import 'package:flutter/material.dart';
 // Models:
 import 'package:app_museo/models/dbrecord.dart';
@@ -88,6 +88,8 @@ class _MyHomePageState extends State<MyHomePage> {
       if(_nfctag!.id >= 0) {
         _item = _nfctag!.id;
       }
+      var message = 'NFC tag item: ${_nfctag!.id}';
+      showSnackbar(message, 3);
      });
   }
 
@@ -99,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
       String code = data.code!=null ? data.code!.substring(data.code!.length-2) : ''; 
       int val = int.tryParse(code) ?? -1;
       if(val >= 0) {
-        message = '';
+        message = 'QR code item: $val';
         _item = val;
       }
       showSnackbar(message, 3);      
@@ -129,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // print(result.value[0]);  // Debug Test
     //return Computer.fromJson(new Map<String, dynamic>.from(result.value[index]));  // First try: works!
 
-    print('_parseJsonItems(): '+result.value.toString());  // debug 
+    print('_parseJsonItems(): '+result.value.toString());  // debug     
 
     return (result.value).map((i) =>
               Computer.fromJson(new Map<String, dynamic>.from(i))).toList();  
@@ -140,10 +142,16 @@ class _MyHomePageState extends State<MyHomePage> {
     {
       print('id: '+index.toString()+', itemList: '+(itemList==null?'null':'ok'));
       print('itemList.length: '+itemList!.length.toString());
+      //showSnackbar('Item with id $index not found', 4);
       return Computer(brand: '', id: index, description: '', name: '', year: '');
     }
-    
-    return itemList![index];
+    for (Computer item in itemList ) {
+      if(index == item.id)
+        return item;
+    }
+    // return itemList![index];
+    //showSnackbar('Item with id $index not found', 4);
+    return Computer(brand: '', id: index, description: 'Item with id $index not found', name: '', year: '');
   }
 
   @override

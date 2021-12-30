@@ -1,4 +1,5 @@
 // Model for Firebase Realtime database content
+import 'package:charset_converter/charset_converter.dart';
 
 class Computer {
   final int id;
@@ -15,7 +16,7 @@ class Computer {
     required this.year
   });
 
-  factory Computer.fromJson(Map<String, dynamic> parsedJson){
+  factory Computer.fromJson(Map<String, dynamic> parsedJson) {    
     return Computer(
       id: parsedJson['id'],
       brand : parsedJson ['brand'],
