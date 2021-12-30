@@ -138,20 +138,21 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Computer getItem(int index, List<dynamic> itemList) {
+    print('id: '+index.toString()+', itemList: '+(itemList==null?'null':'ok'));
+    print('itemList.length: '+itemList!.length.toString());
+    /*
     if(index < 0 || itemList == null  || itemList!.length <= index) // invalid tag
-    {
-      print('id: '+index.toString()+', itemList: '+(itemList==null?'null':'ok'));
-      print('itemList.length: '+itemList!.length.toString());
+    {      
       //showSnackbar('Item with id $index not found', 4);
       return Computer(brand: '', id: index, description: '', name: '', year: '');
-    }
+    } */
     for (Computer item in itemList ) {
       if(index == item.id)
         return item;
     }
     // return itemList![index];
     //showSnackbar('Item with id $index not found', 4);
-    return Computer(brand: '', id: index, description: 'Item with id $index not found', name: '', year: '');
+    return Computer(brand: '', id: index, description: '', name: '', year: '');
   }
 
   @override
