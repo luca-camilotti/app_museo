@@ -1,5 +1,6 @@
 /* AppMuseo */
 
+import 'package:app_museo/utils/auth.dart';
 import 'package:flutter/material.dart';
 // Models:
 import 'package:app_museo/models/dbrecord.dart';
@@ -17,6 +18,11 @@ import 'package:firebase_core/firebase_core.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:firebase_database/firebase_database.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+
+// Firebase authentication:
+import 'package:firebase_auth/firebase_auth.dart';
+
+// Json stuff:
 import 'dart:convert';  // json conversion
 
 // void main() => runApp(MyApp());
@@ -74,6 +80,18 @@ class _MyHomePageState extends State<MyHomePage> {
   // initialize Firebase connection:
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   
+  // Firebase auth
+  final useremail = "pippo.appmuseo@jfkennedy.gov.yes";
+  final userpwd = "itiskennedy2022";
+  final authHandler = new Auth();
+
+  /*
+  authHandler.handleSignInEmail(emailController.text, passwordController.text)
+    .then((FirebaseUser user) {
+         Navigator.push(context, new MaterialPageRoute(builder: (context) => new HomePage()));
+   }).catchError((e) => print(e));
+  */
+
   late List<dynamic> itemList = [];  // Museum item list
 
   int _item = -1; 
@@ -191,14 +209,17 @@ class _MyHomePageState extends State<MyHomePage> {
           /*final DatabaseReference db = FirebaseDatabase.instance.reference();
           db.child('AppMuseo/').once().then((result) => print(/*result.value*/ parseJson(result, _nfctag.id)));
           */
-                    
           final DatabaseReference _db = FirebaseDatabase.instance.reference();
           
-          _db.child('AppMuseo/').once().then((result)  {
-            print('Firebase Realtime DB fetching: '+result.value.toString());
-            itemList = _parseJsonItems(result);
-            });
-            return Scaffold(
+          authHandler.handleSignInEmail(useremail, userpwd)
+              .then((User user) {
+                _db.child('AppMuseo/').once().then((result)  {
+                  print('Firebase Realtime DB fetching: '+result.value.toString());
+                  itemList = _parseJsonItems(result);
+                });
+              }).catchError((e) => print("Unable to login to Firebase!"));
+                    
+          return Scaffold(
                 appBar: AppBar(
                   title: Text(widget.title),
                 ),
