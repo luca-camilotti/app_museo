@@ -1,6 +1,8 @@
-# app_museo
+# JFK AppMuseo
 
-A new Flutter project.
+JFKennedy Museum Flutter project.
+
+For students: work on branch student !
 
 ## Getting Started
 
