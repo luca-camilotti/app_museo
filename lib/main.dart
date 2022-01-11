@@ -83,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // Firebase auth
   final useremail = "pippo.appmuseo@jfkennedy.gov.yes";
   final userpwd = "itiskennedy2022";
-  final authHandler = new Auth();
+  
 
   /*
   authHandler.handleSignInEmail(emailController.text, passwordController.text)
@@ -211,6 +211,7 @@ class _MyHomePageState extends State<MyHomePage> {
           */
           final DatabaseReference _db = FirebaseDatabase.instance.reference();
           
+          final authHandler = new Auth();
           authHandler.handleSignInEmail(useremail, userpwd)
               .then((User user) {
                 _db.child('AppMuseo/').once().then((result)  {
