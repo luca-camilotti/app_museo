@@ -2,11 +2,19 @@
 
 JFKennedy Museum Flutter project.
 
-For students: work on branch student !
+For students: work on branch student!
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Repository
+https://github.com/luca-camilotti/app_museo
+
+### Run app
+flutter run --no-sound-null-safety
+
+### Build apk
+flutter build apk --no-sound-null-safety
+
 
 A few resources to get you started if this is your first Flutter project:
 

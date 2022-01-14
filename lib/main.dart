@@ -214,7 +214,7 @@ class _MyHomePageState extends State<MyHomePage> {
           final authHandler = new Auth();
           authHandler.handleSignInEmail(useremail, userpwd)
               .then((User user) {
-                _db.child('AppMuseo/').once().then((result)  {
+                _db.child('AppMuseo/'+user.uid+'/').once().then((result)  {
                   print('Firebase Realtime DB fetching: '+result.value.toString());
                   itemList = _parseJsonItems(result);
                 });
