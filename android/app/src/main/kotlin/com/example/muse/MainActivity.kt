@@ -1,4 +1,4 @@
-package com.example.app_museo
+package com.example.muse
 
 import io.flutter.embedding.android.FlutterActivity
 
