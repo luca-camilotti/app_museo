@@ -7,9 +7,9 @@ Quest'app permette di visitare in modo interattivo il nostro museo tramite il pr
 I codici QR e i tag NFC presenti sui vari cimeli del museo consentiranno al visitatore di scoprire rapidamente la storia dell'informatica.
 
 ## Studente
-Davide Nadin
-5CIA
-A.S. 2021/2022
+Davide Nadin  
+5CIA  
+A.S. 2021/2022  
 
 ## Librerie usate
 1. [Qr Code Scanner](https://github.com/juliuscanute/qr_code_scanner)
