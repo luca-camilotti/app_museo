@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   NFCtag? _nfctag = null;  // NFC tag data attribute
   String? _qrcode = null;  // QR code attribute
   
-  // NFC tag data callback:
+  // NFC tag data callback - deprecated:
   void _setNFCID(NfcData data) {
     setState(() {
       _nfctag = NFCtag.fromJson(data.id, new Map<String, dynamic>.from(jsonDecode(data.content.substring(19))));
@@ -42,6 +42,32 @@ class _HomeScreenState extends State<HomeScreen> {
       var message = 'NFC tag item: ${_nfctag!.id}';
       showSnackbar(message, 3);
      });
+  }
+
+  // Show info on NFC tag:
+  void _showInfoNFC(NfcData data) {
+    _nfctag = NFCtag.fromJson(data.id, new Map<String, dynamic>.from(jsonDecode(data.content.substring(19))));
+    if(_nfctag != null && _nfctag!.id >= 0) {
+      _item = _nfctag!.id;
+      var cimelio;
+      var id = _nfctag!.id;
+        for (int i = 0; i < cimeli.length; i++) {
+          if (cimeli[i].id == id) {
+            cimelio = cimeli[i];
+          }
+        }
+        if(cimelio!=null) {
+            Navigator.of(context).pushNamed("/result", arguments: {
+              "cimelio": cimelio,
+            });
+            // dispose();
+        }
+        else {
+          // showSnackbar("NFCtag id: "+id.toString(), 3);
+        }
+    }
+    var message = 'NFC tag item: ${_nfctag!.id}';
+    showSnackbar(message, 3);
   }
 
   // Show a snackbar: 
@@ -68,9 +94,10 @@ class _HomeScreenState extends State<HomeScreen> {
     // print(result.value[0]);  // Debug Test
     //return Computer.fromJson(new Map<String, dynamic>.from(result.value[index]));  // First try: works!
 
-    print('_parseJsonItems(): '+result.value.toString());  // debug     
+    print('_parseJsonItems(): '+result.value.toString());  // debug   
+     
 
-    return (result.value).map((i) =>
+    return (result.value).map<Cimelio>((i) =>
               Cimelio.fromJson(new Map<String, dynamic>.from(i))).toList();  
   }
 
@@ -82,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
       print(onData.id);  // debug
       print(onData.content);  // debug
       
-      _setNFCID(onData);
+      _showInfoNFC(onData);
     });
 
 
@@ -110,8 +137,9 @@ class _HomeScreenState extends State<HomeScreen> {
             final authHandler = Auth();
             authHandler.handleSignInEmail(useremail, userpwd).then((User user) {
               _db.child('AppMuseo/' + user.uid + '/').once().then((result) {
-                print('Firebase Realtime DB fetching: '+result.value.toString());
+                print('(HomeScreen) Firebase Realtime DB fetching: '+result.value.toString());
                 cimeli = _parseJsonItems(result);
+                print("(HomeScreen) cimeli.length: "+cimeli.length.toString()); 
                 /*
                 for (var obj in jsonDecode(jsonEncode(result.snapshot.value))) {
                   Cimelio cimelio = Cimelio.fromJson(obj);

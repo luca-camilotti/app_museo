@@ -135,7 +135,7 @@ class _ScanScreenState extends State<ScanScreen> {
 
     controller.scannedDataStream.listen((scanData) {
 
-      /***** original ****/
+      /***** luke original ****/
       /*
       _qrcode = data.code;
       String message = 'QR Code Error: '+data.code.toString();
@@ -148,8 +148,11 @@ class _ScanScreenState extends State<ScanScreen> {
       /*********/
 
       
-      var qrcode = (scanData.code)!=null ? (scanData.code)?.substring((scanData.code)!.length-2) : '';
-
+      var qrcode = null;
+      if((scanData.code)!.length>=2)  // the code is in the last tro characters
+        qrcode = (scanData.code)!=null ? (scanData.code)?.substring((scanData.code)!.length-2) : '';
+      else
+        qrcode = (scanData.code)!=null ? (scanData.code) : '';
       // var qrcode = (scanData.code)?.replaceAll("jfkmuseum", "");
 
       var code = null;
@@ -162,7 +165,7 @@ class _ScanScreenState extends State<ScanScreen> {
       if (code != null) {
         var cimelio;
 
-        print("cimeli.length: "+cimeli.length.toString());
+        print("(ScanScreen) cimeli.length: "+cimeli.length.toString());
         for (int i = 0; i < cimeli.length; i++) {
           if (cimeli[i].id == code) {
             cimelio = cimeli[i];
@@ -185,7 +188,9 @@ class _ScanScreenState extends State<ScanScreen> {
               ),
           );   
     
-          ScaffoldMessenger.of(context).showSnackBar(snackbar);      
+          ScaffoldMessenger.of(context).showSnackBar(snackbar); 
+          dispose();
+          Navigator.of(context).pop();    
     
         }
       }
