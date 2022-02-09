@@ -35,6 +35,8 @@ dependencies:
   qr_code_scanner: ^0.6.1
   firebase_auth: ^3.3.5
   flutter_auth: ^0.0.1
+  url_launcher: ^6.0.18
+  html_unescape: ^2.0.0
 
 dev_dependencies:
   flutter_test:
