@@ -88,6 +88,42 @@ class HelpScreen extends StatelessWidget {
                   alignment: TextAlign.center,
                   elevation: 2,
                 ),
+                // Credits
+                TextContainer(
+                  text: "Credits 🙂",
+                  fontSize: 24,
+                  weight: FontWeight.bold,
+                  backgroundColor: Color(0xffEF5347),
+                  alignment: TextAlign.center,
+                  elevation: 3,
+                ),
+                TextContainer(
+                  text:
+                      '''Davide Nadin
+(UI designer and developer)
+Francesco Di Bon
+(backend data designer and developer)
+Monica Armenio
+(concept designer)
+Luca Camilotti
+(project engineer)''',
+                  fontSize: 18,
+                  weight: FontWeight.normal,
+                  backgroundColor: Colors.white,
+                  alignment: TextAlign.center,
+                  elevation: 2,
+                ),
+                TextContainer(
+                  text:
+                      '''© 2022 ITST JFKennedy
+All rights reserved.''',
+                  fontSize: 18,
+                  weight: FontWeight.normal,
+                  backgroundColor: Colors.white,
+                  alignment: TextAlign.center,
+                  elevation: 2,
+                )
+
               ],
             ),
           ),
