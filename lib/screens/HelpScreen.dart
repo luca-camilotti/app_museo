@@ -106,7 +106,11 @@ Francesco Di Bon
 Monica Armenio
 (concept designer)
 Luca Camilotti
-(project engineer)''',
+(project engineer)
+Leopoldo Izzo
+and
+Giuseppe Rossi
+(museum founders and creators)''',
                   fontSize: 18,
                   weight: FontWeight.normal,
                   backgroundColor: Colors.white,
