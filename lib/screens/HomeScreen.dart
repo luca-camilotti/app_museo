@@ -4,7 +4,8 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';  // NFC plugin
+// import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';  // NFC plugin
+import 'package:nfc_manager/nfc_manager.dart'; // New NFC plugin (23-05-2022)
 import 'package:flutter/material.dart';
 import '/models/nfctag.dart';
 import '/models/cimelio.dart';
@@ -33,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _qrcode = null;  // QR code attribute
   
   // NFC tag data callback - deprecated:
+  /*
   void _setNFCID(NfcData data) {
     setState(() {
       _nfctag = NFCtag.fromJson(data.id, new Map<String, dynamic>.from(jsonDecode(data.content.substring(19))));
@@ -42,11 +44,12 @@ class _HomeScreenState extends State<HomeScreen> {
       var message = 'NFC tag item: ${_nfctag!.id}';
       showSnackbar(message, 3);
      });
-  }
+  }*/
 
   // Show info on NFC tag:
-  void _showInfoNFC(NfcData data) {
-    _nfctag = NFCtag.fromJson(data.id, new Map<String, dynamic>.from(jsonDecode(data.content.substring(19))));
+  void _showInfoNFC(/*NfcData*/ Map<String, dynamic> data) {
+    // _nfctag = NFCtag.fromJson(data.id, new Map<String, dynamic>.from(jsonDecode(data.content.substring(19))));
+    _nfctag = NFCtag.fromJson(data['id'], new Map<String, dynamic>.from(jsonDecode(data['content'].substring(19))));
     if(_nfctag != null && _nfctag!.id >= 0) {
       _item = _nfctag!.id;
       var cimelio;
@@ -105,12 +108,28 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
 
     // NFC Stream Reader event listener:
+    /*
     FlutterNfcReader.onTagDiscovered().listen((onData) {
       print(onData.id);  // debug
       print(onData.content);  // debug
       
       _showInfoNFC(onData);
     });
+    */
+
+    NfcManager.instance.isAvailable().then((value) {
+      print('NFC reader ready..');
+      
+      NfcManager.instance.startSession(
+        onDiscovered: (NfcTag tag) async {
+          // Do something with an NfcTag instance:
+          print(tag.data['id']);  // debug
+          print(tag.data['content']);  // debug
+          _showInfoNFC(tag.data);
+          // result.value = tag.data;
+        },
+      );
+    } );
 
 
     return FutureBuilder(
@@ -237,7 +256,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 backgroundColor: const Color(0xffEF5347),
                 child: const Icon(Icons.qr_code_rounded,
                     size: 28, color: Colors.white),
-                onPressed: () => {Navigator.of(context).pushNamed('/scan')},
+                onPressed: ()  {
+                  // Stop Session
+                  // NfcManager.instance.stopSession();
+                  Navigator.of(context).pushNamed('/scan');},
               ),
             );
           } else {

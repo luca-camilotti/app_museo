@@ -11,7 +11,7 @@ void main() {
 
 // Link all'app del kennedy sullo store Android
 String shareUrl =
-    "https://play.google.com/store/apps/details?id=com.reddit.frontpage";
+    "https://play.google.com/store/apps/details?id=com.jfkennedy.app_museo";
 
 // Array che mantiene tutti i Cimeli del museo (ottenuti da Firebase)
 List<Cimelio> cimeli = [];

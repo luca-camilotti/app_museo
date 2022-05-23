@@ -64,9 +64,6 @@ PODS:
     - GoogleUtilities/UserDefaults (~> 7.7)
     - PromisesObjC (< 3.0, >= 1.2)
   - Flutter (1.0.0)
-  - flutter_nfc_reader (0.0.1):
-    - Flutter
-    - VYNFCKit
   - GoogleAppMeasurement (8.10.0):
     - GoogleAppMeasurement/AdIdSupport (= 8.10.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.6)
@@ -118,13 +115,14 @@ PODS:
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
+  - nfc_manager (0.0.1):
+    - Flutter
   - PromisesObjC (2.0.0)
   - qr_code_scanner (0.2.0):
     - Flutter
     - MTBBarcodeScanner
   - url_launcher_ios (0.0.1):
     - Flutter
-  - VYNFCKit (0.3.2)
 
 DEPENDENCIES:
   - charset_converter (from `.symlinks/plugins/charset_converter/ios`)
@@ -133,7 +131,7 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_database (from `.symlinks/plugins/firebase_database/ios`)
   - Flutter (from `Flutter`)
-  - flutter_nfc_reader (from `.symlinks/plugins/flutter_nfc_reader/ios`)
+  - nfc_manager (from `.symlinks/plugins/nfc_manager/ios`)
   - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
@@ -154,7 +152,6 @@ SPEC REPOS:
     - MTBBarcodeScanner
     - nanopb
     - PromisesObjC
-    - VYNFCKit
 
 EXTERNAL SOURCES:
   charset_converter:
@@ -167,8 +164,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_database/ios"
   Flutter:
     :path: Flutter
-  flutter_nfc_reader:
-    :path: ".symlinks/plugins/flutter_nfc_reader/ios"
+  nfc_manager:
+    :path: ".symlinks/plugins/nfc_manager/ios"
   qr_code_scanner:
     :path: ".symlinks/plugins/qr_code_scanner/ios"
   url_launcher_ios:
@@ -187,7 +184,6 @@ SPEC CHECKSUMS:
   FirebaseDatabase: 5f3e83b0a0d8759378fbd5d05661244d14dfbbb0
   FirebaseInstallations: 25764cf322e77f99449395870a65b2bef88e1545
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
-  flutter_nfc_reader: 67d71071d779d28b827ea50dcbe00d09286f253d
   GoogleAppMeasurement: a3311dbcf3ea651e5a070fe8559b57c174ada081
   GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
@@ -195,10 +191,10 @@ SPEC CHECKSUMS:
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
+  nfc_manager: 69e4cd9c15112206ab30246b1ce8d81a75729fdf
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
   url_launcher_ios: 02f1989d4e14e998335b02b67a7590fa34f971af
-  VYNFCKit: 86a9b711fd1f34f6f7128a2a883cd58dbd781b9d
 
 PODFILE CHECKSUM: 4c3f6979db888c76602ec166e9c101d27c6e74ae
 

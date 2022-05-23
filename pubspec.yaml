@@ -25,7 +25,7 @@ dependencies:
     sdk: flutter  
   firebase_core: "^1.7.0"
   firebase_database: "^8.0.0"
-  flutter_nfc_reader: ^0.1.0
+  # flutter_nfc_reader: ^0.1.0
   charset_converter: ^2.0.0
 
 
@@ -37,6 +37,7 @@ dependencies:
   flutter_auth: ^0.0.1
   url_launcher: ^6.0.18
   html_unescape: ^2.0.0
+  nfc_manager: ^3.1.1
 
 dev_dependencies:
   flutter_test:
