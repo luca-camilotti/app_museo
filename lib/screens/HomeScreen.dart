@@ -7,12 +7,15 @@ import 'package:firebase_database/firebase_database.dart';
 // import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';  // NFC plugin
 import 'package:nfc_manager/nfc_manager.dart'; // New NFC plugin (23-05-2022)
 import 'package:flutter/material.dart';
+import 'package:nfc_manager/platform_tags.dart';
 import '/models/nfctag.dart';
 import '/models/cimelio.dart';
 import '/widgets/TextContainer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '/utils/auth.dart';
 import '../main.dart';
+import 'dart:io';
+import 'package:app_museo/utils/CimelioHelper.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -28,11 +31,11 @@ class _HomeScreenState extends State<HomeScreen> {
   final useremail = "pippo.appmuseo@jfkennedy.gov.yes";
   final userpwd = "itiskennedy2022";
 
+  // unused variables
+  // int _item = -1;
+  // NFCtag? _nfctag = null; // NFC tag data attribute
+  // String? _qrcode = null; // QR code attribute
 
-  int _item = -1; 
-  NFCtag? _nfctag = null;  // NFC tag data attribute
-  String? _qrcode = null;  // QR code attribute
-  
   // NFC tag data callback - deprecated:
   /*
   void _setNFCID(NfcData data) {
@@ -46,36 +49,40 @@ class _HomeScreenState extends State<HomeScreen> {
      });
   }*/
 
-  // Show info on NFC tag:
-  void _showInfoNFC(/*NfcData*/ Map<String, dynamic> data) {
-    // _nfctag = NFCtag.fromJson(data.id, new Map<String, dynamic>.from(jsonDecode(data.content.substring(19))));
-    _nfctag = NFCtag.fromJson(data['id'], new Map<String, dynamic>.from(jsonDecode(data['content'].substring(19))));
-    if(_nfctag != null && _nfctag!.id >= 0) {
-      _item = _nfctag!.id;
-      var cimelio;
-      var id = _nfctag!.id;
-        for (int i = 0; i < cimeli.length; i++) {
-          if (cimeli[i].id == id) {
-            cimelio = cimeli[i];
-          }
-        }
-        if(cimelio!=null) {
-            Navigator.of(context).pushNamed("/result", arguments: {
-              "cimelio": cimelio,
-            });
-            // dispose();
-        }
-        else {
-          // showSnackbar("NFCtag id: "+id.toString(), 3);
-        }
-    }
-    var message = 'NFC tag item: ${_nfctag!.id}';
-    showSnackbar(message, 3);
-  }
 
-  // Show a snackbar: 
+  // Show info on NFC tag:
+  // void _showInfoNFC(/*NfcData*/ Map<String, dynamic> data) {
+  //   // _nfctag = NFCtag.fromJson(data.id, new Map<String, dynamic>.from(jsonDecode(data.content.substring(19))));
+  //   _nfctag = NFCtag.fromJson(
+  //       data['id'],
+  //       new Map<String, dynamic>.from(
+  //           jsonDecode(data['content'].substring(19))));
+  //   if (_nfctag != null && _nfctag!.id >= 0) {
+  //     _item = _nfctag!.id;
+  //     var cimelio;
+  //     var id = _nfctag!.id;
+  //     for (int i = 0; i < cimeli.length; i++) {
+  //       if (cimeli[i].id == id) {
+  //         cimelio = cimeli[i];
+  //       }
+  //     }
+  //     if (cimelio != null) {
+  //       Navigator.of(context).pushNamed("/result", arguments: {
+  //         "cimelio": cimelio,
+  //       });
+  //       // dispose();
+  //     } else {
+  //       // showSnackbar("NFCtag id: "+id.toString(), 3);
+  //     }
+  //   }
+  //   var message = 'NFC tag item: ${_nfctag!.id}';
+  //   showSnackbar(message, 3);
+  // }
+
+  // Show a snackbar:
   void showSnackbar(String? text, int duration) {
-    final String message = (text==null ? 'invalid QR: '+text.toString() : text.toString());
+    final String message =
+        (text == null ? 'invalid QR: ' + text.toString() : text.toString());
     final snackbar = SnackBar(
       duration: Duration(seconds: duration),
       content: Text(message),
@@ -83,30 +90,83 @@ class _HomeScreenState extends State<HomeScreen> {
         label: 'ok',
         onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
       ),
-    );   
-    if(message!=null && message.length > 0) {
-      ScaffoldMessenger.of(context).showSnackBar(snackbar);      
+    );
+    if (message.length > 0) {
+      ScaffoldMessenger.of(context).showSnackBar(snackbar);
     }
   }
 
-
   // Firebase Realtime Database Json parsing:
-  List<Cimelio> _parseJsonItems(DataSnapshot result) {    
+  List<Cimelio> _parseJsonItems(DataSnapshot result) {
     // final parsedJson = json.decode(result.value);  // don't need this: json is already decoded
     // print(result.value);     // Debug Test
     // print(result.value[0]);  // Debug Test
     //return Computer.fromJson(new Map<String, dynamic>.from(result.value[index]));  // First try: works!
 
-    print('_parseJsonItems(): '+result.value.toString());  // debug   
-     
+    print('_parseJsonItems(): ' + result.value.toString()); // debug
 
-    return (result.value).map<Cimelio>((i) =>
-              Cimelio.fromJson(new Map<String, dynamic>.from(i))).toList();  
+    return (result.value)
+        .map<Cimelio>((i) => Cimelio.fromJson(new Map<String, dynamic>.from(i)))
+        .toList();
+  }
+
+  List<Widget> _createNFCbutton() {
+    List<Widget> elements = [];
+
+    elements.add(
+      SizedBox(
+        height: 10,
+      ),
+    );
+    elements.add(
+      FloatingActionButton(
+          heroTag: 'btn_nfc',
+          backgroundColor: const Color(0xffEF5347),
+          child: const Icon(Icons.nfc, size: 28, color: Colors.white),
+          onPressed: () {
+            NfcManager.instance.isAvailable().then((value) {
+              print('NFC reader ready..');
+              NfcManager.instance.startSession(
+                alertMessage: 'Avvicina il dispositivo ad un tag NFC',
+                onError: (error) async {
+                  print(error.type.toString());
+                  print(error.details.toString());
+                  print(error.message.toString());
+                  NfcManager.instance.stopSession();
+                },
+                onDiscovered: (NfcTag tag) async {
+                  // print(tag);
+                  Ndef? ndef = Ndef.from(tag);
+                  if (ndef != null) {
+                    ndef.read().then((value) {
+                      // print(value.records.first.payload);
+                      String data =
+                          String.fromCharCodes(value.records.first.payload);
+                      // print('Data to string: $data');
+                      Map<String, dynamic> jsondata = json.decode(data);
+                      // print('ID from json: ${jsondata['id']}');
+                      NfcManager.instance.stopSession();
+                      Cimelio? cimelio = CimelioHelper.getScannedCimelio(jsondata['id']);
+                      if (cimelio != null) {
+                        Navigator.of(context).pushNamed("/result", arguments: {
+                          "cimelio": cimelio,
+                        });
+                      }
+                      NfcManager.instance.stopSession();
+                    });
+                  } else {
+                    print('ndef is null');
+                  }
+                },
+              );
+            });
+          }),
+    );
+    return elements;
   }
 
   @override
   Widget build(BuildContext context) {
-
     // NFC Stream Reader event listener:
     /*
     FlutterNfcReader.onTagDiscovered().listen((onData) {
@@ -116,21 +176,6 @@ class _HomeScreenState extends State<HomeScreen> {
       _showInfoNFC(onData);
     });
     */
-
-    NfcManager.instance.isAvailable().then((value) {
-      print('NFC reader ready..');
-      
-      NfcManager.instance.startSession(
-        onDiscovered: (NfcTag tag) async {
-          // Do something with an NfcTag instance:
-          print(tag.data['id']);  // debug
-          print(tag.data['content']);  // debug
-          _showInfoNFC(tag.data);
-          // result.value = tag.data;
-        },
-      );
-    } );
-
 
     return FutureBuilder(
       // Initialize FlutterFire:
@@ -156,9 +201,11 @@ class _HomeScreenState extends State<HomeScreen> {
             final authHandler = Auth();
             authHandler.handleSignInEmail(useremail, userpwd).then((User user) {
               _db.child('AppMuseo/' + user.uid + '/').once().then((result) {
-                print('(HomeScreen) Firebase Realtime DB fetching: '+result.value.toString());
+                print('(HomeScreen) Firebase Realtime DB fetching: ' +
+                    result.value.toString());
                 cimeli = _parseJsonItems(result);
-                print("(HomeScreen) cimeli.length: "+cimeli.length.toString()); 
+                print(
+                    "(HomeScreen) cimeli.length: " + cimeli.length.toString());
                 /*
                 for (var obj in jsonDecode(jsonEncode(result.snapshot.value))) {
                   Cimelio cimelio = Cimelio.fromJson(obj);
@@ -252,14 +299,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              floatingActionButton: FloatingActionButton(
-                backgroundColor: const Color(0xffEF5347),
-                child: const Icon(Icons.qr_code_rounded,
-                    size: 28, color: Colors.white),
-                onPressed: ()  {
-                  // Stop Session
-                  // NfcManager.instance.stopSession();
-                  Navigator.of(context).pushNamed('/scan');},
+              floatingActionButton: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  FloatingActionButton(
+                    heroTag: 'btn_qr',
+                    backgroundColor: const Color(0xffEF5347),
+                    child: const Icon(Icons.qr_code_rounded,
+                        size: 28, color: Colors.white),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('/scan');
+                    },
+                  ),
+                  if (Platform.isIOS) ..._createNFCbutton(),
+                ],
               ),
             );
           } else {

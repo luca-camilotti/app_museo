@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import '/main.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
+import 'package:app_museo/utils/CimelioHelper.dart';
+
 class ScanScreen extends StatefulWidget {
   const ScanScreen({Key? key}) : super(key: key);
 
@@ -166,11 +168,12 @@ class _ScanScreenState extends State<ScanScreen> {
         var cimelio;
 
         print("(ScanScreen) cimeli.length: "+cimeli.length.toString());
-        for (int i = 0; i < cimeli.length; i++) {
-          if (cimeli[i].id == code) {
-            cimelio = cimeli[i];
-          }
-        }
+        cimelio = CimelioHelper.getScannedCimelio(code);
+        // for (int i = 0; i < cimeli.length; i++) {
+        //   if (cimeli[i].id == code) {
+        //     cimelio = cimeli[i];
+        //   }
+        // }
         if(cimelio!=null) {
             Navigator.of(context).pushReplacementNamed("/result", arguments: {
               "cimelio": cimelio,
