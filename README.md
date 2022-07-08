@@ -15,6 +15,8 @@ flutter run --no-sound-null-safety
 ### Build apk
 flutter build apk --no-sound-null-safety
 
+### Build bundle
+flutter build appbundle --no-sound-null-safety
 
 A few resources to get you started if this is your first Flutter project:
 
