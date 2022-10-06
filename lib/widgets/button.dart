@@ -10,9 +10,13 @@ class Button extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      child: RaisedButton(
-        color: Colors.blue,
-        textColor: Colors.white,
+      child: ElevatedButton(
+        //color: Colors.blue,
+        //textColor: Colors.white,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blue, // background
+          foregroundColor: Colors.white, // foreground
+        ),
         child: Text(buttonText),
         onPressed: selectHandler,
       ),
