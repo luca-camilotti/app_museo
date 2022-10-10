@@ -6,32 +6,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
+// Not used/Deprecated! Use ScanScreen instead!
 class QRViewExample extends StatefulWidget {
   const QRViewExample({Key? key, required this.setQRcode}) : super(key: key);
 
-  final Function(Barcode) setQRcode; // Function to change the main screen state: it is passed through the constructor
+  final Function(Barcode)
+      setQRcode; // Function to change the main screen state: it is passed through the constructor
 
   @override
   State<StatefulWidget> createState() => _QRViewExampleState();
 }
 
 class _QRViewExampleState extends State<QRViewExample> {
-  
-  
   Barcode? result;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
-  
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
   @override
   void reassemble() {
+    // problem of black image in Android
     super.reassemble();
+
     if (Platform.isAndroid) {
       controller!.pauseCamera();
     }
     controller!.resumeCamera();
+    /*
+    if (Platform.isAndroid) {
+      // added by Luke (10/10/2022)
+      controller!.pauseCamera();
+    } else if (Platform.isIOS) {
+      controller!.resumeCamera();
+    } */
   }
 
   @override
@@ -134,6 +142,7 @@ class _QRViewExampleState extends State<QRViewExample> {
         : 300.0;
     // To ensure the Scanner view is properly sizes after rotation
     // we need to listen for Flutter SizeChanged notification and update controller
+
     return QRView(
       key: qrKey,
       onQRViewCreated: _onQRViewCreated,
@@ -155,7 +164,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       setState(() {
         result = scanData;
       });
-      widget.setQRcode(scanData);  // QR Code data callback
+      widget.setQRcode(scanData); // QR Code data callback
       SchedulerBinding.instance!.addPostFrameCallback((_) {
         // Navigator.of(context, rootNavigator: true).pop();
         // Navigator.pop(context);  // Back to main screen

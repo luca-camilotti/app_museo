@@ -136,7 +136,6 @@ class _ScanScreenState extends State<ScanScreen> {
     });
 
     controller.scannedDataStream.listen((scanData) {
-
       /***** luke original ****/
       /*
       _qrcode = data.code;
@@ -149,16 +148,17 @@ class _ScanScreenState extends State<ScanScreen> {
       } */
       /*********/
 
-      
       var qrcode = null;
-      if((scanData.code)!.length>=2)  // the code is in the last tro characters
-        qrcode = (scanData.code)!=null ? (scanData.code)?.substring((scanData.code)!.length-2) : '';
+      if ((scanData.code)!.length >=
+          2) // the code is in the last tro characters
+        qrcode = (scanData.code) != null
+            ? (scanData.code)?.substring((scanData.code)!.length - 2)
+            : '';
       else
-        qrcode = (scanData.code)!=null ? (scanData.code) : '';
+        qrcode = (scanData.code) != null ? (scanData.code) : '';
       // var qrcode = (scanData.code)?.replaceAll("jfkmuseum", "");
 
       var code = null;
-
 
       try {
         code = int.tryParse(qrcode!);
@@ -167,37 +167,40 @@ class _ScanScreenState extends State<ScanScreen> {
       if (code != null) {
         var cimelio;
 
-        print("(ScanScreen) cimeli.length: "+cimeli.length.toString());
+        print("(ScanScreen) cimeli.length: " + cimeli.length.toString());
         cimelio = CimelioHelper.getScannedCimelio(code);
         // for (int i = 0; i < cimeli.length; i++) {
         //   if (cimeli[i].id == code) {
         //     cimelio = cimeli[i];
         //   }
         // }
-        if(cimelio!=null) {
-            Navigator.of(context).pushReplacementNamed("/result", arguments: {
-              "cimelio": cimelio,
-            });
-            dispose();
-        }
-        else {
-          final String? message = ((scanData.code)?.toString()??" ")+" code: "+code.toString();
-          final snackbar = SnackBar(
-              duration: Duration(seconds: 3),
-              content: Text(message ?? ''),
-              action: SnackBarAction(
-              label: 'ok',
-                onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
-              ),
-          );   
-    
-          ScaffoldMessenger.of(context).showSnackBar(snackbar); 
+        if (cimelio != null) {
+          Navigator.of(context).pushReplacementNamed("/result", arguments: {
+            "cimelio": cimelio,
+          });
           dispose();
-          Navigator.of(context).pop();    
-    
+        } else {
+          final String? message = ((scanData.code)?.toString() ?? " ") +
+              " code: " +
+              code.toString();
+          final snackbar = SnackBar(
+            duration: Duration(seconds: 3),
+            content: Text(message ?? ''),
+            action: SnackBarAction(
+              label: 'ok',
+              onPressed: () =>
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+            ),
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(snackbar);
+          dispose();
+          Navigator.of(context).pop();
         }
       }
     });
+    controller.pauseCamera(); // fix black camera screen bug - Luke (10/10/2022)
+    controller.resumeCamera();
   }
 
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {

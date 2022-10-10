@@ -49,7 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
      });
   }*/
 
-
   // Show info on NFC tag:
   // void _showInfoNFC(/*NfcData*/ Map<String, dynamic> data) {
   //   // _nfctag = NFCtag.fromJson(data.id, new Map<String, dynamic>.from(jsonDecode(data.content.substring(19))));
@@ -110,6 +109,22 @@ class _HomeScreenState extends State<HomeScreen> {
         .toList();
   }
 
+  AlertDialog createAlert(String title, String message, String buttonText) {
+    AlertDialog alert = AlertDialog(
+      title: Text(title),
+      content: Text(message),
+      actions: [
+        /* TextButton(
+          child: Text(buttonText),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ), */
+      ],
+    );
+    return alert;
+  }
+
   List<Widget> _createNFCbutton() {
     List<Widget> elements = [];
 
@@ -125,7 +140,31 @@ class _HomeScreenState extends State<HomeScreen> {
           child: const Icon(Icons.nfc, size: 28, color: Colors.white),
           onPressed: () {
             NfcManager.instance.isAvailable().then((value) {
+              if (!value) {
+                print('NFC reader NOT ready..');
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return createAlert(
+                        "Warning",
+                        "NFC is disabled on your device. Please enable it.",
+                        "Ok");
+                  },
+                );
+                return;
+              }
               print('NFC reader ready..');
+              AlertDialog? alert;
+              if (Platform.isAndroid) {
+                alert = createAlert(
+                    "NFC", "Ora avvicina il dispositivo ad un tag NFC", "Ok");
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return alert!;
+                  },
+                );
+              }
               NfcManager.instance.startSession(
                 alertMessage: 'Avvicina il dispositivo ad un tag NFC',
                 onError: (error) async {
@@ -135,6 +174,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   NfcManager.instance.stopSession();
                 },
                 onDiscovered: (NfcTag tag) async {
+                  if (Platform.isAndroid && alert != null)
+                    Navigator.pop(context); // dismiss dialog
                   // print(tag);
                   Ndef? ndef = Ndef.from(tag);
                   if (ndef != null) {
@@ -146,7 +187,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       Map<String, dynamic> jsondata = json.decode(data);
                       // print('ID from json: ${jsondata['id']}');
                       NfcManager.instance.stopSession();
-                      Cimelio? cimelio = CimelioHelper.getScannedCimelio(jsondata['id']);
+                      Cimelio? cimelio =
+                          CimelioHelper.getScannedCimelio(jsondata['id']);
                       if (cimelio != null) {
                         Navigator.of(context).pushNamed("/result", arguments: {
                           "cimelio": cimelio,
@@ -311,7 +353,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.of(context).pushNamed('/scan');
                     },
                   ),
-                  if (Platform.isIOS) ..._createNFCbutton(),
+                  if (Platform.isIOS || Platform.isAndroid)
+                    ..._createNFCbutton(),
                 ],
               ),
             );

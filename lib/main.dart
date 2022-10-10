@@ -6,6 +6,7 @@ import 'screens/HomeScreen.dart';
 import 'screens/ScanScreen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const Muse());
 }
 
