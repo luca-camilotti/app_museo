@@ -199,8 +199,11 @@ class _ScanScreenState extends State<ScanScreen> {
         }
       }
     });
-    controller.pauseCamera(); // fix black camera screen bug - Luke (10/10/2022)
-    controller.resumeCamera();
+    if (Platform.isAndroid) {
+      // fix black camera screen bug - Luke (10/10/2022)
+      controller.pauseCamera();
+      controller.resumeCamera();
+    }
   }
 
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {

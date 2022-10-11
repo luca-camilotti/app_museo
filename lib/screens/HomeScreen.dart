@@ -146,8 +146,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return createAlert(
-                        "Warning",
-                        "NFC is disabled on your device. Please enable it.",
+                        "NFC disabilitato",
+                        "Per poter leggere i tag bisogna prima abilitare la funzione NFC sul dispositivo.",
                         "Ok");
                   },
                 );
