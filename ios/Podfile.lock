@@ -134,7 +134,7 @@ SPEC CHECKSUMS:
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
-  nfc_manager: 69e4cd9c15112206ab30246b1ce8d81a75729fdf
+  nfc_manager: d7da7cb781f7744b94df5fe9dbca904ac4a0939e
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
   url_launcher_ios: 02f1989d4e14e998335b02b67a7590fa34f971af
