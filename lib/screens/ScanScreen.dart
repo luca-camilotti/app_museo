@@ -199,7 +199,7 @@ class _ScanScreenState extends State<ScanScreen> {
         }
       }
     });
-    if (Platform.isAndroid) {
+    if (Platform.isAndroid || Platform.isIOS) {
       // fix black camera screen bug - Luke (10/10/2022)
       controller.pauseCamera();
       controller.resumeCamera();
