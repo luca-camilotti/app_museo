@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     print('_parseJsonItems(): ' + result.value.toString()); // debug
 
-    return (result.value)
+    return (result.value as List<dynamic>)
         .map<Cimelio>((i) => Cimelio.fromJson(new Map<String, dynamic>.from(i)))
         .toList();
   }
@@ -238,14 +238,14 @@ class _HomeScreenState extends State<HomeScreen> {
         } else {
           // Once complete, show your application
           if (snapshot.connectionState == ConnectionState.done) {
-            final DatabaseReference _db = FirebaseDatabase.instance.reference();
+            final DatabaseReference _db = FirebaseDatabase.instance.ref();  //.reference();
 
             final authHandler = Auth();
             authHandler.handleSignInEmail(useremail, userpwd).then((User user) {
               _db.child('AppMuseo/' + user.uid + '/').once().then((result) {
                 print('(HomeScreen) Firebase Realtime DB fetching: ' +
-                    result.value.toString());
-                cimeli = _parseJsonItems(result);
+                    result.snapshot.value.toString() /*value.toString()*/);
+                cimeli = _parseJsonItems(result.snapshot);
                 print(
                     "(HomeScreen) cimeli.length: " + cimeli.length.toString());
                 /*

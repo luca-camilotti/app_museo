@@ -23,8 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter  
-  firebase_core: "^1.7.0"
-  firebase_database: "^8.0.0"
+  firebase_core: ^3.4.0
+  firebase_database: ^11.1.1
   # flutter_nfc_reader: ^0.1.0
   charset_converter: ^2.0.0
 
@@ -34,8 +34,8 @@ dependencies:
   cupertino_icons: ^1.0.0
   # qr_code_scanner: ^0.6.1
   qr_code_scanner: ^1.0.1
-  firebase_auth: ^3.3.5
-  flutter_auth: ^0.0.1
+  firebase_auth: ^5.2.0
+  # flutter_auth: ^0.0.1 # to be removed (not workink with Dart 3)
   url_launcher: ^6.0.18
   html_unescape: ^2.0.0
   # nfc_manager: ^3.1.1

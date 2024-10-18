@@ -68,5 +68,7 @@
 		<string>D2760000850101</string>
 		<string>00000000000000</string>
 	</array>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 </dict>
 </plist>
