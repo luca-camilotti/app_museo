@@ -7,8 +7,8 @@ import 'package:firebase_database/firebase_database.dart';
 // import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';  // NFC plugin
 import 'package:nfc_manager/nfc_manager.dart'; // New NFC plugin (23-05-2022)
 import 'package:flutter/material.dart';
-import 'package:nfc_manager/platform_tags.dart';
-import '/models/nfctag.dart';
+// import 'package:nfc_manager/platform_tags.dart';
+// import '/models/nfctag.dart';
 import '/models/cimelio.dart';
 import '/widgets/TextContainer.dart';
 import 'package:url_launcher/url_launcher.dart';

@@ -48,7 +48,7 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.jfkennedy.app_museo"
         // applicationId "com.jfkennedy.jfkmuse"
-        minSdkVersion 20
+        minSdkVersion 23
         targetSdkVersion 34
         multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
