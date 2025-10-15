@@ -4,8 +4,10 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:nfc_manager/ndef_record.dart';
 // import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';  // NFC plugin
 import 'package:nfc_manager/nfc_manager.dart'; // New NFC plugin (23-05-2022)
+import 'package:nfc_manager_ndef/nfc_manager_ndef.dart';
 import 'package:flutter/material.dart';
 // import 'package:nfc_manager/platform_tags.dart';
 // import '/models/nfctag.dart';
@@ -138,7 +140,94 @@ class _HomeScreenState extends State<HomeScreen> {
           heroTag: 'btn_nfc',
           backgroundColor: const Color(0xffEF5347),
           child: const Icon(Icons.nfc, size: 28, color: Colors.white),
-          onPressed: () {
+          onPressed: () async { // La funzione onPressed deve essere asincrona
+  // 1. Verifica la disponibilità dell'NFC
+  bool isNfcAvailable = await NfcManager.instance.isAvailable();
+
+  if (!isNfcAvailable) {
+    print('NFC reader NOT ready..');
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return createAlert(
+            "NFC disabilitato",
+            "Per poter leggere i tag bisogna prima abilitare la funzione NFC sul dispositivo.",
+            "Ok");
+      },
+    );
+    return;
+  }
+
+  print('NFC reader ready..');
+
+  // 2. Mostra l'alert specifico per Android (se necessario)
+  AlertDialog? androidAlert;
+  if (Platform.isAndroid) {
+    androidAlert = createAlert(
+        "NFC", "Ora avvicina il dispositivo ad un tag NFC", "Ok");
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return androidAlert!;
+      },
+    );
+  }
+
+  // 3. Avvia la sessione NFC con gestione degli errori tramite try-catch
+  try {
+    await NfcManager.instance.startSession(
+      alertMessageIos: 'Avvicina il dispositivo ad un tag NFC',
+      onDiscovered: (NfcTag tag) async {
+        // La logica di scoperta è incapsulata qui.
+
+        if (Platform.isAndroid && androidAlert != null) {
+          // Chiudi l'alert di Android se presente
+          // Usiamo 'if (Navigator.of(context).canPop())' per evitare errori 
+          // se il dialogo è già stato chiuso da un altro evento.
+          if (Navigator.of(context).canPop()) { 
+             Navigator.of(context).pop(); 
+          }
+        }
+        
+        Ndef? ndef = Ndef.from(tag);
+
+        if (ndef != null) {
+          try {
+            NdefMessage? value = await ndef.read();
+            String data = String.fromCharCodes(value!.records.first.payload);
+            
+            Map<String, dynamic> jsondata = json.decode(data);
+
+            // Ferma la sessione dopo la lettura riuscita
+            NfcManager.instance.stopSession(); 
+
+            Cimelio? cimelio = CimelioHelper.getScannedCimelio(jsondata['id']);
+            
+            if (cimelio != null) {
+              Navigator.of(context).pushNamed("/result", arguments: {
+                "cimelio": cimelio,
+              });
+            }
+            
+          } catch (e) {
+            print('Errore durante la lettura NDEF o decodifica JSON: $e');
+            // Qui potresti mostrare un AlertDialog di errore all'utente.
+            NfcManager.instance.stopSession();
+          }
+        } else {
+          print('Tag non NDEF o non formattato NDEF.');
+        }
+      }, pollingOptions: {NfcPollingOption.iso14443}, // You can also specify iso18092 and iso1569
+    );
+  } catch (e) {
+    // Questo try-catch gestisce gli errori di 'startSession' stessa, 
+    // come l'annullamento della sessione da parte dell'utente su iOS/macOS.
+    print('Eccezione durante la sessione NFC: $e');
+    // Qui puoi gestire l'errore mostrando un avviso se necessario.
+  }
+}
+          
+          /* () {
             NfcManager.instance.isAvailable().then((value) {
               if (!value) {
                 print('NFC reader NOT ready..');
@@ -199,10 +288,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   } else {
                     print('ndef is null');
                   }
-                },
+                }, pollingOptions: {NfcPollingOption.iso14443}, // You can also specify iso18092 and iso1569
               );
             });
-          }),
+          } */ ),
     );
     return elements;
   }

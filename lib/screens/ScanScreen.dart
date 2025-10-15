@@ -4,8 +4,9 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import '/main.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+// import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import 'package:app_museo/utils/CimelioHelper.dart';
 

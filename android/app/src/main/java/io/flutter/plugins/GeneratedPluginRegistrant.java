@@ -36,14 +36,14 @@ public final class GeneratedPluginRegistrant {
       Log.e(TAG, "Error registering plugin firebase_database, io.flutter.plugins.firebase.database.FirebaseDatabasePlugin", e);
     }
     try {
-      flutterEngine.getPlugins().add(new io.flutter.plugins.nfcmanager.NfcManagerPlugin());
+      flutterEngine.getPlugins().add(new dev.flutter.plugins.nfcmanager.NfcManagerPlugin());
     } catch (Exception e) {
-      Log.e(TAG, "Error registering plugin nfc_manager, io.flutter.plugins.nfcmanager.NfcManagerPlugin", e);
+      Log.e(TAG, "Error registering plugin nfc_manager, dev.flutter.plugins.nfcmanager.NfcManagerPlugin", e);
     }
     try {
-      flutterEngine.getPlugins().add(new net.touchcapture.qr.flutterqr.FlutterQrPlugin());
+      flutterEngine.getPlugins().add(new net.touchcapture.qr.flutterqrplus.FlutterQrPlusPlugin());
     } catch (Exception e) {
-      Log.e(TAG, "Error registering plugin qr_code_scanner, net.touchcapture.qr.flutterqr.FlutterQrPlugin", e);
+      Log.e(TAG, "Error registering plugin qr_code_scanner_plus, net.touchcapture.qr.flutterqrplus.FlutterQrPlusPlugin", e);
     }
     try {
       flutterEngine.getPlugins().add(new io.flutter.plugins.urllauncher.UrlLauncherPlugin());

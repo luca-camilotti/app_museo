@@ -4,7 +4,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
+//import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 // Not used/Deprecated! Use ScanScreen instead!
 class QRViewExample extends StatefulWidget {
