@@ -25,7 +25,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NFCReaderUsageDescription</key>
-	<string></string>
+	<string>L'accesso al lettore NFC è necessario per la scansione dei tag NFC</string>
 	<key>NSCameraUsageDescription</key>
 	<string>L'accesso alla fotocamera è necessario per la scansione dei codici QR</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

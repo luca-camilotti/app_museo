@@ -142,8 +142,17 @@ class _HomeScreenState extends State<HomeScreen> {
           child: const Icon(Icons.nfc, size: 28, color: Colors.white),
           onPressed: () async { // La funzione onPressed deve essere asincrona
   // 1. Verifica la disponibilità dell'NFC
-  bool isNfcAvailable = await NfcManager.instance.isAvailable();
+  // bool isNfcAvailable = await NfcManager.instance.isAvailable();  // isAvailable() is deprecated
+  final isNfcAvailable = await NfcManager.instance.checkAvailability();  
 
+  /*
+    NfcManager.instance.checkAvailability() returns:
+      NfcAvailability.available
+      NfcAvailability.disabled
+      NfcAvailability.unsupported
+  */
+
+  /*
   if (!isNfcAvailable) {
     print('NFC reader NOT ready..');
     showDialog(
@@ -157,6 +166,39 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     return;
   }
+  */
+
+  if (isNfcAvailable == NfcAvailability.unsupported) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return createAlert(
+        "NFC non supportato",
+        "Questo dispositivo non supporta la tecnologia NFC. "
+        "Puoi comunque usare la scansione tramite QR code.",
+        "Ok",
+      );
+    },
+  );
+  return;
+}
+
+if (isNfcAvailable == NfcAvailability.disabled) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return createAlert(
+        "NFC disabilitato",
+        "Per leggere i tag NFC devi prima abilitare l’NFC dalle impostazioni del dispositivo.",
+        "Ok",
+      );
+    },
+  );
+  return;
+}
+
+  // A questo punto NFC è disponibile
+
 
   print('NFC reader ready..');
 
@@ -351,15 +393,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: const Text("JFK Muse"),
                 backgroundColor: const Color(0xffEF5347),
                 actions: <Widget>[
+                  if (Platform.isAndroid) // Don't show the "share" icon on iOS 
                   Padding(
                       padding: const EdgeInsets.only(right: 20.0),
                       child: GestureDetector(
                         onTap: () {
-                          launch(shareUrl);
+                          launchUrl(Uri.parse(shareUrl));  // launch(shareUrl);
                         },
                         child: Icon(
                           Icons.share,
-                          color: Colors.white.withOpacity(0.75),
+                          color: Colors.white.withValues(alpha: 191),  //withOpacity(0.75),
                           size: 26.0,
                         ),
                       )),
