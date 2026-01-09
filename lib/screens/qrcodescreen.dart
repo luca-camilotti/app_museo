@@ -58,7 +58,7 @@ class _QRViewExampleState extends State<QRViewExample> {
                 children: <Widget>[
                   if (result != null)
                     Text(
-                        'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
+                        'Barcode Type: ${result!.format.name}   Data: ${result!.code}')
                   else
                     const Text('Scan a code'),
                   Row(
@@ -86,14 +86,14 @@ class _QRViewExampleState extends State<QRViewExample> {
                               await controller?.flipCamera();
                               setState(() {});
                             },
-                            child: FutureBuilder(
+                            child: FutureBuilder<CameraFacing>(
                               future: controller?.getCameraInfo(),
                               builder: (context, snapshot) {
                                 if (snapshot.data != null) {
                                   return Text(
-                                      'Camera facing ${describeEnum(snapshot.data!)}');
+                                      'Camera facing ${snapshot.data!.name}');
                                 } else {
-                                  return const Text('loading');
+                                  return CircularProgressIndicator(); //const Text('loading');
                                 }
                               },
                             )),
@@ -186,7 +186,7 @@ class _QRViewExampleState extends State<QRViewExample> {
 
   @override
   void dispose() {
-    controller?.dispose();
+    // controller?.dispose();  // deprecated
     super.dispose();
   }
 }

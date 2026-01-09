@@ -54,7 +54,7 @@ class _ScanScreenState extends State<ScanScreen> {
                         margin: const EdgeInsets.all(8),
                         child: ElevatedButton(
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
+                            backgroundColor: WidgetStateProperty.all(
                                 const Color(0xffEF5347)),
                           ),
                           onPressed: () async {
@@ -79,7 +79,7 @@ class _ScanScreenState extends State<ScanScreen> {
                         margin: const EdgeInsets.all(8),
                         child: ElevatedButton(
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
+                              backgroundColor: WidgetStateProperty.all(
                                   const Color(0xffEF5347)),
                             ),
                             onPressed: () async {
@@ -218,7 +218,7 @@ class _ScanScreenState extends State<ScanScreen> {
 
   @override
   void dispose() {
-    controller?.dispose();
+    // controller?.dispose();  // deprecated
     try {
       super.dispose();
     } catch (ex) {}

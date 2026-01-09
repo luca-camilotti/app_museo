@@ -1,5 +1,7 @@
 // ignore_for_file: file_names
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import '/widgets/TextContainer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,19 +18,20 @@ class HelpScreen extends StatelessWidget {
         title: const Text("JFK Muse"),
         backgroundColor: const Color(0xffEF5347),
         actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-              onTap: () {
-                launch(shareUrl);
-              },
-              child: Icon(
-                Icons.share,
-                color: Colors.white.withOpacity(0.75),
-                size: 26.0,
+          if (Platform.isAndroid) // Don't show the "share" icon on iOS 
+            Padding(
+              padding: const EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {
+                  launchUrl(Uri.parse(shareUrl));  // launch(shareUrl);
+                },
+                child: Icon(
+                  Icons.share,
+                  color: Colors.white.withValues(alpha: 191), //Colors.white.withOpacity(0.75),
+                  size: 26.0,
+                ),
               ),
             ),
-          ),
         ],
       ),
       body: Center(

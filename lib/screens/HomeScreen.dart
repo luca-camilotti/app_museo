@@ -197,7 +197,7 @@ if (isNfcAvailable == NfcAvailability.disabled) {
   return;
 }
 
-  // A questo punto NFC è disponibile
+  // A questo punto NFC è disponibile 
 
 
   print('NFC reader ready..');
@@ -405,7 +405,8 @@ if (isNfcAvailable == NfcAvailability.disabled) {
                           color: Colors.white.withValues(alpha: 191),  //withOpacity(0.75),
                           size: 26.0,
                         ),
-                      )),
+                      ),
+                    ),
                   Padding(
                     padding: const EdgeInsets.only(right: 20.0),
                     child: GestureDetector(
@@ -414,7 +415,7 @@ if (isNfcAvailable == NfcAvailability.disabled) {
                       },
                       child: Icon(
                         Icons.info_outline,
-                        color: Colors.white.withOpacity(0.75),
+                        color: Colors.white.withValues(alpha: 191), //Colors.white.withOpacity(0.75),
                         size: 26.0,
                       ),
                     ),
@@ -450,7 +451,7 @@ if (isNfcAvailable == NfcAvailability.disabled) {
                           textAlign: TextAlign.center,
                           text: TextSpan(
                             style: TextStyle(
-                                color: Colors.black.withOpacity(0.5),
+                                color: Colors.black.withValues(alpha: 128), //Colors.black.withOpacity(0.5),
                                 fontSize: 18),
                             children: [
                               const TextSpan(
@@ -460,7 +461,8 @@ if (isNfcAvailable == NfcAvailability.disabled) {
                               WidgetSpan(
                                 child: Icon(Icons.info_outline,
                                     size: 18,
-                                    color: Colors.black.withOpacity(0.4)),
+                                    color: Colors.black.withValues(alpha: 102)), //Colors.black.withOpacity(0.4)),
+
                               ),
                               const TextSpan(
                                 text: " in alto a destra.",
